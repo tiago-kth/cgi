@@ -1,3 +1,9 @@
+
+| Computer Graphics and Interaction |
+| --------------------------------- |
+| Tiago Maranhao Barreto Pereira    |
+
+
 # Project Specification
 
 It has been really difficult to choose a project! I am naturally aiming for the highest grade possible, and I have many interests, but my skills are somewhat limited (for now).  I would like to use the opportunity of the project to both learn something new and understand how things work from the ground up, so I am not interested in using existing libraries, frameworks, environments, or engines for this project.
