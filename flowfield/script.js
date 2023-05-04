@@ -1,8 +1,10 @@
 class Canvas {
 
-    cell_size = 10;
+    cell_size = 30;
     W;
     H;
+    I;
+    J;
 
     constructor(ref) {
 
@@ -12,6 +14,9 @@ class Canvas {
 
         this.el.width = this.W;
         this.el.height = this.H;
+
+        this.I = Math.floor(this.W / this.cell_size);
+        this.J = Math.floor(this.H / this.cell_size);
 
         this.ctx = this.el.getContext('2d');
 
@@ -66,8 +71,8 @@ class Field {
 
         this.cv = cv;
 
-        const I = Math.floor(cv.W / cv.cell_size);
-        const J = Math.floor(cv.H / cv.cell_size);
+        const I = cv.I;
+        const J = cv.J;
 
         this.I = I;
         this.J = J;
@@ -75,7 +80,9 @@ class Field {
         for (let i = 0; i < I; i++) {
             for (let j = 0; j < J; j++) {
 
-                this.values.push(Math.random() * Math.PI);
+                this.values.push(
+                    perlin.get(i/I,j/J)//Math.random() 
+                    * Math.PI);
 
             }
         }
@@ -112,7 +119,8 @@ class Field {
             this.cv.ctx.rotate(v);
             this.cv.ctx.textAlign = 'center';
             this.cv.ctx.textBaseline = 'middle';
-            this.cv.ctx.fillText('→', 0, 0, this.cv.cell_size / 2);
+            this.cv.ctx.fillText('→', 0, 0, this.cv.cell_size);
+
             /*
             this.cv.ctx.beginPath();
             this.cv.ctx.moveTo(0,0);
@@ -142,7 +150,79 @@ class Field {
         })
 
     }
+
+    drawVectors2() {
+
+        this.values.forEach( (v, n) => {
+
+            const i = this.getCoords(n).i;
+            const j = this.getCoords(n).j;
+
+            this.cv.ctx.save();
+            this.cv.ctx.translate(
+                i * this.cv.cell_size,// + this.cv.cell_size/2, 
+                j * this.cv.cell_size //+ this.cv.cell_size/2
+            );
+            this.cv.ctx.rotate(v);//Math.PI/6);
+            this.cv.ctx.beginPath();
+            this.cv.ctx.moveTo(0,0);
+            this.cv.ctx.lineTo(this.cv.cell_size, 0);
+            this.cv.ctx.lineTo(this.cv.cell_size * 0.8, this.cv.cell_size * 0.2);
+            this.cv.ctx.moveTo(this.cv.cell_size, 0);
+            this.cv.ctx.lineTo(this.cv.cell_size * 0.8, -this.cv.cell_size * 0.2);
+            this.cv.ctx.stroke();
+            this.cv.ctx.restore();
+
+        })
+
+    }
+}
+
+class Vec {
+
+    x;
+    y;
+
+    constructor(x, y) {
+
+        this.x = x;
+        this.y = y;
+
+    }
+
+    mod() {
+
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) )
+
+    }
+
+    add(vec_b) {
+
+        this.x += vec_b.x;
+        this.y += vec_b.y
+
+    }
+
+    mult(scalar) {
+
+        this.x *= scalar;
+        this.y *= scalar;
+
+    }
+
+    /* this make it possible to use the utility function without instantiating an object */
+    static fromAngle(ang) {
+
+        let x = Math.cos(ang);
+        let y = Math.sin(ang);
+
+        return new Vec(x, y)
+
+    }
+
 }
 
 const cv = new Canvas('canvas');
 const field = new Field(cv);
+cv.build_grid();
+field.drawVectors();
