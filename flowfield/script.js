@@ -81,7 +81,7 @@ class Field {
             for (let j = 0; j < J; j++) {
 
                 this.values.push(
-                    perlin.get(i/I,j/J)//Math.random() 
+                    noise.get(i/I,j/J,0)//Math.random() 
                     * Math.PI);
 
             }
@@ -222,7 +222,66 @@ class Vec {
 
 }
 
+class Particle {
+
+    pos;
+    vel;
+    acc;
+
+    cv_ref;
+
+    constructor(cv) {
+
+        this.pos = new Vec(0, 0);
+        this.vel = new Vec(0, 0);
+        this.acc = new Vec(0, 0);
+
+        this.cv_ref = cv;
+
+    }
+
+    update() {
+
+        this.vel.add(this.acc);
+        this.pos.add(this.pos);
+        this.acc.mult(0);
+        this.wrap_around();
+
+    }
+
+    wrap_around() {
+        if (this.pos.x > this.cv_ref.W) this.pos.x = 0;
+        if (this.pos.x < 0            ) this.pos.x = this.cv_ref.W;
+        if (this.pos.y > this.cv_ref.H) this.pos.y = 0;
+        if (this.pos.y < 0            ) this.pos.y = this.cv_ref.H;
+    }
+
+    apply_force(force) {
+
+        this.acc.add(force);
+
+    }
+
+    display() {
+        
+        this.cv_ref.ctx.fillStyle = 'red';
+        this.cv_ref.ctx.strokeStyle = 'red';
+        this.cv_ref.ctx.beginPath();
+        this.cv_ref.ctx.arc(this.pos.x, this.pos.y, 2, 0, Math.PI * 2);
+        this.cv_ref.ctx.stroke();
+        this.cv_ref.ctx.fill();
+
+    }
+
+}
+
+const noise = new perlinNoise3d();
 const cv = new Canvas('canvas');
 const field = new Field(cv);
+const part = new Particle();
 cv.build_grid();
 field.drawVectors();
+
+// 3d noise
+
+// animation loop
