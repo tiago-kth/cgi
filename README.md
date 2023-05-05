@@ -46,3 +46,30 @@ Original https://www.youtube.com/watch?v=xW8skO7MFYw
 
 Command Prompt Console Game Engine
 https://www.youtube.com/watch?v=cWc0hgYwZyc
+
+shadertoy.com
+
+https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
+
+https://paveldogreat.github.io/WebGL-Fluid-Simulation/
+
+Lab2
+
+Duration 2,
+Shape sphere
+Radius .5
+Emission: 0
+Burst
+Count 75
+Start Lifetime 2
+Speed 30
+Start Size random 0.25, 1
+Start Rotation 0 360
+Renderer default line, default particle
+*Limit Velocity over lifetime*
+Speed 3, dampen 0.2
+Size over lifetime
+Collision: World
+Color over lifetime
+Gravity modifier
+Trail
