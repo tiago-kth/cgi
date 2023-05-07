@@ -53,6 +53,17 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
 
 https://paveldogreat.github.io/WebGL-Fluid-Simulation/
 
+Paper
+Lily Pad: Towards Real-time Interactive Computational Fluid Dynamics
+https://arxiv.org/abs/1510.06886
+
+https://mikeash.com/pyblog/fluid-simulation-for-dummies.html
+
+http://graphics.cs.cmu.edu/nsp/course/15-464/Fall09/papers/StamFluidforGames.pdf
+
+https://www.researchgate.net/publication/2560062_Real-Time_Fluid_Dynamics_for_Games
+
+
 Lab2
 
 Duration 2,
@@ -73,3 +84,14 @@ Collision: World
 Color over lifetime
 Gravity modifier
 Trail
+
+Transform
+-0.027
+0.705
+0.112
+
+
+
+5.448402
+0.6847593
+-1.411567
