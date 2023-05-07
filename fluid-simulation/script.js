@@ -129,27 +129,27 @@ class Vec {
 
 class Fluid {
 
-    dim;
-
-    v;  // vector field for velocity
-    v0; // previous velocity
+    Vx; Vy  // vector field for velocity
+    Vx0; Vy0 // previous velocity
     s;  // vector field for dye/plankton density
-    s0; // previous density
+    density; // previous density?
 
     diffusion;
     viscosity;
     time_step;
 
-    constructor(dim, diffusion, viscosity, time_step) {
+    constructor(diffusion, viscosity, time_step) {
 
-        this.dim = dim;
+        const size = N * N;
 
-        const size = cv.I * cv. J;
+        this.Vx  = new Array(size);
+        this.Vx0 = new Array(size);
 
-        this.v  = new Array(size);
-        this.v0 = new Array(size);
+        this.Vy  = new Array(size);
+        this.Vy0 = new Array(size);
+
         this.s  = new Array(size);
-        this.s0 = new Array(size);
+        this.density = new Array(size);
 
         this.viscosity = viscosity;
         this.diffusion = diffusion;
@@ -159,7 +159,7 @@ class Fluid {
 
     getIndex(x, y) {
 
-        return x + y * this.dim.I; //nof columns
+        return x + y * N; //nof columns
 
     }
 
@@ -178,34 +178,64 @@ class Fluid {
 
     }
 
+    step() {
+        const N       = this.size;
+        const visc    = this.visc;
+        const diff    = this.diff;
+        const dt      = this.dt;
+
+        const Vx      = this.Vx;
+        const Vy      = this.Vy;
+
+        const Vx0     = this.Vx0;
+        const Vy0     = this.Vy0;
+
+        const s       = this.s;
+        const density = this.density;
+        
+        diffuse(1, Vx0, Vx, visc);
+        diffuse(2, Vy0, Vy, visc);
+        
+        project(Vx0, Vy0, Vx, Vy);
+        
+        advect(1, Vx, Vx0, Vx0, Vy0);
+        advect(2, Vy, Vy0, Vx0, Vy0);
+        
+        project(Vx, Vy, Vx0, Vy0);
+        
+        diffuse(0, s, density, diff);
+        advect(0, density, s, Vx, Vy);
+    }
+
 }
 
-function diffuse(b, x, x0, diffusion, time_step) {
+function diffuse(b, x, x0, diffusion) {
 
-    const a = time_step * diffusion * (I - 2) * (J - 2);
-    lin_solve(b, x, x0, a, 1 + 6 * a);
+    const dt = params.TIME_STEP;
+
+    const a = dt * diffusion * (N - 2) * (N - 2);
+    solve_linear(b, x, x0, a, 1 + 6 * a);
 
 }
 
-function project(vX, vY, p, div, I, J) {
+function project(vX, vY, p, div) {
 
-    const iter = config.ITERATIONS;
-    const N = cv.N;
+    const iter = params.ITERATIONS;
 
-    for (let j = 1; j < J - 1; j++) {
-        for (let i = 1; i < I - 1; i++) {
+    for (let j = 1; j < N - 1; j++) {
+        for (let i = 1; i < N - 1; i++) {
             div[fluid.getIndex(i, j)] = -0.5 * (
-                     velocX[fluid.getIndex(i+1, j  )]
-                    -velocX[fluid.getIndex(i-1, j  )]
-                    +velocY[fluid.getIndex(i  , j+1)]
-                    -velocY[fluid.getIndex(i  , j-1)]
+                     vX[fluid.getIndex(i+1, j  )]
+                    -vX[fluid.getIndex(i-1, j  )]
+                    +vY[fluid.getIndex(i  , j+1)]
+                    -vY[fluid.getIndex(i  , j-1)]
                 )/N;
             p[fluid.getIndex(i, j)] = 0;
         }
     }
     set_bnd(0, div); 
     set_bnd(0, p);
-    lin_solve(0, p, div, 1, 6);
+    solve_linear(0, p, div, 1, 6);
     
     for (let j = 1; j < N - 1; j++) {
         for (let i = 1; i < N - 1; i++) {
@@ -216,15 +246,17 @@ function project(vX, vY, p, div, I, J) {
         }
     }
 
-    set_bnd(1, velocX);
-    set_bnd(2, velocY);
+    set_bnd(1, vX);
+    set_bnd(2, vY);
 
 }
 
 function advect(b, d, d0,  vX, vY) {
 
+    // b controls the set boundaries
+
     const dt = params.TIME_STEP;
-    const N = cv.N;
+    
 
     let i0, i1, j0, j1;
     
@@ -267,11 +299,9 @@ function advect(b, d, d0,  vX, vY) {
             
             d[fluid.getIndex(i, j)] = 
             
-                s0 * ( t0 * d0[fluid.getIndex(i0i, j0i)] )
-                   + ( t1 * d0[fluid.getIndex(i0i, j1i)] )
+                s0 * ( t0 * d0[fluid.getIndex(i0i, j0i)] + t1 * d0[fluid.getIndex(i0i, j1i)] )
                 +
-                s1 * ( t0 * d0[fluid.getIndex(i1i, j0i)] )
-                   + ( t1 * d0[fluid.getIndex(i1i, j1i)] );
+                s1 * ( t0 * d0[fluid.getIndex(i1i, j0i)] + t1 * d0[fluid.getIndex(i1i, j1i)] );
         }
     }
 
@@ -279,6 +309,8 @@ function advect(b, d, d0,  vX, vY) {
 }
 
 function set_bnd(b, x) {
+
+    
 
     // reverses the velocities at the boundaries 
     for(let i = 1; i < N - 1; i++) {
@@ -304,7 +336,7 @@ function set_bnd(b, x) {
 
 function solve_linear(b, x, x0, a, c, I, J) {
 
-    const iter = config.ITERATIONS;
+    const iter = params.ITERATIONS;
 
     //As stated before, this function is mysterious, but it does some kind of solving. this is done by running through the whole array and setting each cell to a combination of its neighbors. It does this several times; the more iterations it does, the more accurate the results, but the slower things run. In the step function above, four iterations are used. After each iteration, it resets the boundaries so the calculations don't explode.
 
@@ -326,4 +358,5 @@ function solve_linear(b, x, x0, a, c, I, J) {
 }
 
 const cv = new Canvas('canvas');
-const fluid = new Fluid(cv.getSize(), )
+const N = cv.N;
+const fluid = new Fluid(0, 0, 0.1);
