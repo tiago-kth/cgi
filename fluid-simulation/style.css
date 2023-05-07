@@ -1,0 +1,9 @@
+* {
+    box-sizing: border-box;
+}
+
+canvas {
+    width: 97vmin;
+    height: 97vmin;
+    border: 3px solid green;
+}
