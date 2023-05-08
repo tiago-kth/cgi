@@ -95,3 +95,11 @@ Transform
 5.448402
 0.6847593
 -1.411567
+
+
+
+
+Target group. Have you nailed the basics to align with the target group and the use situation? Do you now have clear answers to questions like: where, how often and for how long they will play it? Have you done any game testing? If not, when, how and to find out what?
+
+
+Business. Do you now have answers to how you will 1/ create an interest for the game and 2/ maintain an interest. Have you decided how you’ll enter the market? When and how will there be any revenue? To put it simple, who is your first customer? How and when do they pay for what?
