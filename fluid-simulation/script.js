@@ -166,23 +166,29 @@ class Fluid {
     addDensity(x, y, amount) {
 
         const index = this.getIndex(x, y);
-        this.s[index] += amount;
+        this.density[index] += amount;
 
     }
 
-    addVelocity(x, y, amount) {
+    addVelocity(x, y, amount_x, amount_y) {
+
+        if (count < 500) {
+            console.log(amount_x, amount_y);
+            count++;
+
+        }
 
         const index = this.getIndex(x, y);
-        this.v[index].x += amount.x;
-        this.v[index].y += amount.y;
+        this.Vx[index] += amount_x;
+        this.Vy[index] += amount_y;
 
     }
 
     step() {
 
         const N       = this.size;
-        const visc    = this.visc;
-        const diff    = this.diff;
+        const visc    = this.viscosity;
+        const diff    = this.diffusion;
         const dt      = this.dt;
 
         const Vx      = this.Vx;
@@ -199,13 +205,15 @@ class Fluid {
         
         project(Vx0, Vy0, Vx, Vy);
         
+        
         advect(1, Vx, Vx0, Vx0, Vy0);
         advect(2, Vy, Vy0, Vx0, Vy0);
         
         project(Vx, Vy, Vx0, Vy0);
         
-        diffuse(0, s, density, diff);
-        advect(0, density, s, Vx, Vy);
+        //diffuse(0, s, density, diff);
+        //advect(0, density, s, Vx, Vy);
+        
 
     }
 
@@ -220,7 +228,7 @@ class Fluid {
                 const index = fluid.getIndex(i, j);
                 const density = fluid.density[index];
 
-                //if (i + j < 50) console.log(density);
+                //if (density > 0) console.log(i,j);
 
                 cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
@@ -239,156 +247,40 @@ class Fluid {
 
 }
 
-function diffuse(b, x, x0, diffusion) {
 
-    const dt = fluid.dt;
 
-    const a = dt * diffusion * (N - 2) * (N - 2);
-    solve_linear(b, x, x0, a, 1 + 6 * a);
+/////////////
 
-}
-
-function project(vX, vY, p, div) {
-
-    const iter = params.ITERATIONS;
-
-    for (let j = 1; j < N - 1; j++) {
-        for (let i = 1; i < N - 1; i++) {
-            div[fluid.getIndex(i, j)] = -0.5 * (
-                     vX[fluid.getIndex(i+1, j  )]
-                    -vX[fluid.getIndex(i-1, j  )]
-                    +vY[fluid.getIndex(i  , j+1)]
-                    -vY[fluid.getIndex(i  , j-1)]
-                )/N;
-            p[fluid.getIndex(i, j)] = 0;
-        }
-    }
-    set_bnd(0, div); 
-    set_bnd(0, p);
-    solve_linear(0, p, div, 1, 6);
-    
-    for (let j = 1; j < N - 1; j++) {
-        for (let i = 1; i < N - 1; i++) {
-            vX[fluid.getIndex(i, j)] -= 0.5 * (  p[fluid.getIndex(i+1, j)]
-                                            -p[fluid.getIndex(i-1, j)]) * N;
-            vY[fluid.getIndex(i, j)] -= 0.5 * (  p[fluid.getIndex(i, j+1)]
-                                            -p[fluid.getIndex(i, j-1)]) * N;
-        }
-    }
-
-    set_bnd(1, vX);
-    set_bnd(2, vY);
-
-}
-
-function advect(b, d, d0,  vX, vY) {
-
-    // b controls the set boundaries
-
-    const dt = fluid.dt;
-    
-
-    let i0, i1, j0, j1;
-    
-    let dtx = dt * (N - 2);
-    let dty = dt * (N - 2);
-    
-    let s0, s1, t0, t1;
-    let tmp1, tmp2, x, y;
-    
-    let Nfloat = N;
-    let ifloat, jfloat;
-    let i, j, k;
-    
-    for(j = 1, jfloat = 1; j < N - 1; j++, jfloat++) { 
-        for(i = 1, ifloat = 1; i < N - 1; i++, ifloat++) {
-            tmp1 = dtx * vX[fluid.getIndex(i, j, k)];
-            tmp2 = dty * vY[fluid.getIndex(i, j, k)];
-
-            x    = ifloat - tmp1; 
-            y    = jfloat - tmp2;
-            
-            if(x < 0.5) x = 0.5; 
-            if(x > Nfloat + 0.5) x = Nfloat + 0.5; 
-            i0 = Math.floor(x); 
-            i1 = i0 + 1.0;
-            if(y < 0.5) y = 0.5; 
-            if(y > Nfloat + 0.5) y = Nfloat + 0.5; 
-            j0 = Math.floor(y);
-            j1 = j0 + 1.0; 
-            
-            s1 = x - i0; 
-            s0 = 1.0 - s1; 
-            t1 = y - j0; 
-            t0 = 1.0 - t1;
-            
-            let i0i = i0;
-            let i1i = i1;
-            let j0i = j0;
-            let j1i = j1;
-            
-            d[fluid.getIndex(i, j)] = 
-            
-                s0 * ( t0 * d0[fluid.getIndex(i0i, j0i)] + t1 * d0[fluid.getIndex(i0i, j1i)] )
-                +
-                s1 * ( t0 * d0[fluid.getIndex(i1i, j0i)] + t1 * d0[fluid.getIndex(i1i, j1i)] );
-        }
-    }
-
-    set_bnd(b, d);
-}
-
-function set_bnd(b, x) {
-
-    // reverses the velocities at the boundaries 
-    for(let i = 1; i < N - 1; i++) {
-        x[fluid.getIndex(i, 0   )] = b == 2 ? -x[fluid.getIndex(i, 1  )] : x[fluid.getIndex(i, 1  )];
-        x[fluid.getIndex(i, N-1 )] = b == 2 ? -x[fluid.getIndex(i, N-2)] : x[fluid.getIndex(i, N-2)];
-    }
-        
-    for(let j = 1; j < N - 1; j++) {
-        x[fluid.getIndex(0  , j)] = b == 1 ? -x[fluid.getIndex(1  , j)] : x[fluid.getIndex(1  , j)];
-        x[fluid.getIndex(N-1, j)] = b == 1 ? -x[fluid.getIndex(N-2, j)] : x[fluid.getIndex(N-2, j)];
-    }
-    
-    x[fluid.getIndex(0, 0)]     = 0.5 * ( x[fluid.getIndex(1, 0)] + x[fluid.getIndex(0, 1)] );
-
-    x[fluid.getIndex(0, N-1)]   = 0.5 * (x[fluid.getIndex(1, N-1)] + x[fluid.getIndex(0, N-2)]);
-
-    x[fluid.getIndex(N-1, 0)]   = 0.5 * (x[fluid.getIndex(N-2, 0)] + x[fluid.getIndex(N-1, 1)]);
-
-    x[fluid.getIndex(N-1, N-1)] = 0.5 * (x[fluid.getIndex(N-2, N-1)] + x[fluid.getIndex(N-1, N-2)]);
-
-}
-
-function solve_linear(b, x, x0, a, c, I, J) {
-
-    const iter = params.ITERATIONS;
-
-    //As stated before, this function is mysterious, but it does some kind of solving. this is done by running through the whole array and setting each cell to a combination of its neighbors. It does this several times; the more iterations it does, the more accurate the results, but the slower things run. In the step function above, four iterations are used. After each iteration, it resets the boundaries so the calculations don't explode.
-
-    const cRecip = 1.0 / c;
-    for (let k = 0; k < iter; k++) { // for each iteration
-        for (let j = 1; j < J - 1; j++) { // loop through the entire grid (except the boundaries)
-            for (let i = 1; i < I - 1; i++) { // ... first along the rows 
-                x[fluid.getIndex(i, j)] =
-                    (x0[fluid.getIndex(i, j)]
-                        + a*(    x[fluid.getIndex(i+1, j  )]
-                                +x[fluid.getIndex(i-1, j  )]
-                                +x[fluid.getIndex(i  , j+1)]
-                                +x[fluid.getIndex(i  , j-1)]
-                        )) * cRecip;
-            }
-        }
-        set_bnd(b, x);
-    }
-}
+let count = 0;
 
 const cv = new Canvas('canvas');
 const N = cv.N;
-const fluid = new Fluid(0, 0, 0.1);
+const fluid = new Fluid(0.2, 0, 0.1);
 
 let dragging = false;
+let mouse_history_x = [];
+let mouse_history_y = [];
+
+function update_mouse_history(posX, posY) {
+
+    mouse_history_x.push(posX);
+    mouse_history_y.push(posY);
+
+    if (mouse_history_x.length < 2) {
+
+        mouse_history_x.push(posX);
+        mouse_history_y.push(posY);
+
+    } else {
+
+        mouse_history_x.splice(0,1);
+        mouse_history_y.splice(0,1);
+
+    }
+
+    // I want to keep this arrays as [previous_position, current_position];
+
+}
 
 cv.el.addEventListener('mousedown', (e) => {
 
@@ -400,11 +292,19 @@ cv.el.addEventListener('mousedown', (e) => {
 cv.el.addEventListener('mousemove', (e) => {
 
     if (dragging) {
-        console.log(e.clientX, e.clientY);
+        //console.log(e.clientX, e.clientY);
 
         const i = Math.floor(e.clientX / cv.cell_size);
         const j = Math.floor(e.clientY / cv.cell_size);
-        fluid.addDensity(i, j, 10);
+
+        update_mouse_history(e.clientX, e.clientY);
+
+        const displ_x = mouse_history_x[1] - mouse_history_x[0];
+        const displ_y = mouse_history_y[1] - mouse_history_y[0];
+
+        console.log(i, j);
+        fluid.addDensity(i, j, 20);
+        fluid.addVelocity(i, j, displ_x, displ_y);
 
     }
 
@@ -436,4 +336,6 @@ function animate(timestamp) {
 
 }
 
-window.requestAnimationFrame(animate);
+function start() {
+    window.requestAnimationFrame(animate);
+}
