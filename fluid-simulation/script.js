@@ -222,7 +222,7 @@ class Fluid {
 
                 //if (i + j < 50) console.log(density);
 
-                cv.ctx.fillStyle = (`rgb(${density}, ${density}, ${density})`);
+                cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
                 //if (i + j < 100) console.log(x, y, cv.cell_size);
@@ -404,7 +404,7 @@ cv.el.addEventListener('mousemove', (e) => {
 
         const i = Math.floor(e.clientX / cv.cell_size);
         const j = Math.floor(e.clientY / cv.cell_size);
-        fluid.addDensity(i, j, 100);
+        fluid.addDensity(i, j, 10);
 
     }
 
