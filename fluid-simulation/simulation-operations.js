@@ -41,7 +41,7 @@ function project(vX, vY, p, div) {
 
 }
 
-function advect(b, d, d0,  vX, vY) {
+function advect(b, d, d0, vX, vY) {
 
     // b controls the set boundaries
 
@@ -55,14 +55,16 @@ function advect(b, d, d0,  vX, vY) {
     let s0, s1, t0, t1;
     let tmp1, tmp2, x, y;
     
-    let Nfloat = N;
+    let Nfloat = N - 2;
     let ifloat, jfloat;
-    let i, j, k;
+    let i, j;
     
     for(j = 1, jfloat = 1; j < N - 1; j++, jfloat++) { 
+
         for(i = 1, ifloat = 1; i < N - 1; i++, ifloat++) {
-            tmp1 = dtx * vX[fluid.getIndex(i, j, k)];
-            tmp2 = dty * vY[fluid.getIndex(i, j, k)];
+
+            tmp1 = dtx * vX[fluid.getIndex(i, j)];
+            tmp2 = dty * vY[fluid.getIndex(i, j)];
 
             x    = ifloat - tmp1; 
             y    = jfloat - tmp2;
@@ -81,10 +83,10 @@ function advect(b, d, d0,  vX, vY) {
             t1 = y - j0; 
             t0 = 1.0 - t1;
             
-            let i0i = i0;
-            let i1i = i1;
-            let j0i = j0;
-            let j1i = j1;
+            let i0i = parseInt(i0);
+            let i1i = parseInt(i1);
+            let j0i = parseInt(j0);
+            let j1i = parseInt(j1);
             
             d[fluid.getIndex(i, j)] = 
             
@@ -92,6 +94,7 @@ function advect(b, d, d0,  vX, vY) {
                 +
                 s1 * ( t0 * d0[fluid.getIndex(i1i, j0i)] + t1 * d0[fluid.getIndex(i1i, j1i)] );
         }
+
     }
 
     set_bnd(b, d);

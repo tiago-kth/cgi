@@ -7,7 +7,7 @@ const params = {
 
 class Canvas {
 
-    cell_size = 30;
+    cell_size = 15;
     W;
     H;
     I;
@@ -172,12 +172,6 @@ class Fluid {
 
     addVelocity(x, y, amount_x, amount_y) {
 
-        if (count < 500) {
-            console.log(amount_x, amount_y);
-            count++;
-
-        }
-
         const index = this.getIndex(x, y);
         this.Vx[index] += amount_x;
         this.Vy[index] += amount_y;
@@ -186,10 +180,10 @@ class Fluid {
 
     step() {
 
-        const N       = this.size;
+        //const N       = this.size;
         const visc    = this.viscosity;
         const diff    = this.diffusion;
-        const dt      = this.dt;
+        //const dt      = this.dt;
 
         const Vx      = this.Vx;
         const Vy      = this.Vy;
@@ -205,14 +199,13 @@ class Fluid {
         
         project(Vx0, Vy0, Vx, Vy);
         
-        
         advect(1, Vx, Vx0, Vx0, Vy0);
         advect(2, Vy, Vy0, Vx0, Vy0);
         
         project(Vx, Vy, Vx0, Vy0);
         
-        //diffuse(0, s, density, diff);
-        //advect(0, density, s, Vx, Vy);
+        diffuse(0, s, density, diff);
+        advect(0, density, s, Vx, Vy);
         
 
     }
@@ -255,7 +248,7 @@ let count = 0;
 
 const cv = new Canvas('canvas');
 const N = cv.N;
-const fluid = new Fluid(0.2, 0, 0.1);
+const fluid = new Fluid(0.05, 0.01, 0.00001);
 
 let dragging = false;
 let mouse_history_x = [];
@@ -302,9 +295,9 @@ cv.el.addEventListener('mousemove', (e) => {
         const displ_x = mouse_history_x[1] - mouse_history_x[0];
         const displ_y = mouse_history_y[1] - mouse_history_y[0];
 
-        console.log(i, j);
-        fluid.addDensity(i, j, 20);
-        fluid.addVelocity(i, j, displ_x, displ_y);
+        //console.log(i, j);
+        fluid.addDensity(i, j, 100);
+        fluid.addVelocity(i, j, displ_x * 100, displ_y * 100);
 
     }
 
@@ -339,3 +332,5 @@ function animate(timestamp) {
 function start() {
     window.requestAnimationFrame(animate);
 }
+
+start();
