@@ -136,24 +136,24 @@ class Fluid {
 
     diffusion;
     viscosity;
-    time_step;
+    dt; // time_step
 
     constructor(diffusion, viscosity, time_step) {
 
         const size = N * N;
 
-        this.Vx  = new Array(size);
-        this.Vx0 = new Array(size);
+        this.Vx  = new Array(size).fill(0);
+        this.Vx0 = new Array(size).fill(0);
 
-        this.Vy  = new Array(size);
-        this.Vy0 = new Array(size);
+        this.Vy  = new Array(size).fill(0);
+        this.Vy0 = new Array(size).fill(0);
 
-        this.s  = new Array(size);
-        this.density = new Array(size);
+        this.s  = new Array(size).fill(0);
+        this.density = new Array(size).fill(0);
 
         this.viscosity = viscosity;
         this.diffusion = diffusion;
-        this.time_step = time_step;
+        this.dt = time_step;
 
     }
 
@@ -163,7 +163,7 @@ class Fluid {
 
     }
 
-    addDye(x, y, amount) {
+    addDensity(x, y, amount) {
 
         const index = this.getIndex(x, y);
         this.s[index] += amount;
@@ -179,6 +179,7 @@ class Fluid {
     }
 
     step() {
+
         const N       = this.size;
         const visc    = this.visc;
         const diff    = this.diff;
@@ -205,13 +206,42 @@ class Fluid {
         
         diffuse(0, s, density, diff);
         advect(0, density, s, Vx, Vy);
+
+    }
+
+    render_density() {
+
+        for (let i = 0; i < N; i++) {
+
+            for (let j = 0; j < N; j++) {
+
+                const x = i * cv.cell_size;
+                const y = j * cv.cell_size;
+                const index = fluid.getIndex(i, j);
+                const density = fluid.density[index];
+
+                //if (i + j < 50) console.log(density);
+
+                cv.ctx.fillStyle = (`rgb(${density}, ${density}, ${density})`);
+                //cv.ctx.fillStyle = 'hotpink';
+                cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
+                //if (i + j < 100) console.log(x, y, cv.cell_size);
+                
+                
+                //cv.ctx.fillStyle = (`rgb(${density}, ${density}, ${density})`);
+                //cv.ctx.fill();
+
+            }
+
+        }
+
     }
 
 }
 
 function diffuse(b, x, x0, diffusion) {
 
-    const dt = params.TIME_STEP;
+    const dt = fluid.dt;
 
     const a = dt * diffusion * (N - 2) * (N - 2);
     solve_linear(b, x, x0, a, 1 + 6 * a);
@@ -255,7 +285,7 @@ function advect(b, d, d0,  vX, vY) {
 
     // b controls the set boundaries
 
-    const dt = params.TIME_STEP;
+    const dt = fluid.dt;
     
 
     let i0, i1, j0, j1;
@@ -310,8 +340,6 @@ function advect(b, d, d0,  vX, vY) {
 
 function set_bnd(b, x) {
 
-    
-
     // reverses the velocities at the boundaries 
     for(let i = 1; i < N - 1; i++) {
         x[fluid.getIndex(i, 0   )] = b == 2 ? -x[fluid.getIndex(i, 1  )] : x[fluid.getIndex(i, 1  )];
@@ -332,7 +360,6 @@ function set_bnd(b, x) {
     x[fluid.getIndex(N-1, N-1)] = 0.5 * (x[fluid.getIndex(N-2, N-1)] + x[fluid.getIndex(N-1, N-2)]);
 
 }
-
 
 function solve_linear(b, x, x0, a, c, I, J) {
 
@@ -360,3 +387,53 @@ function solve_linear(b, x, x0, a, c, I, J) {
 const cv = new Canvas('canvas');
 const N = cv.N;
 const fluid = new Fluid(0, 0, 0.1);
+
+let dragging = false;
+
+cv.el.addEventListener('mousedown', (e) => {
+
+    console.log('on');
+    dragging = true;
+
+});
+
+cv.el.addEventListener('mousemove', (e) => {
+
+    if (dragging) {
+        console.log(e.clientX, e.clientY);
+
+        const i = Math.floor(e.clientX / cv.cell_size);
+        const j = Math.floor(e.clientY / cv.cell_size);
+        fluid.addDensity(i, j, 100);
+
+    }
+
+});
+
+cv.el.addEventListener('mouseup', (e) => {
+
+    console.log('off');
+    dragging = false;
+
+});
+
+function draw() {
+    fluid.step();
+    fluid.render_density();
+}
+
+
+/* animation loop */
+let previous, elapsed;
+
+function animate(timestamp) {
+
+    if (!previous) previous = timestamp;
+    elapsed = timestamp - previous;
+    draw();
+    previous = timestamp;
+    window.requestAnimationFrame(animate);
+
+}
+
+window.requestAnimationFrame(animate);

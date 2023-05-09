@@ -6,4 +6,5 @@ canvas {
     width: 97vmin;
     height: 97vmin;
     border: 3px solid green;
+    background-color: black;
 }
