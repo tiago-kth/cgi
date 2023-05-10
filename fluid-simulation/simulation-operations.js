@@ -77,7 +77,7 @@ function advect(b, d, d0, vX, vY) {
             if(y > Nfloat + 0.5) y = Nfloat + 0.5; 
             j0 = Math.floor(y);
             j1 = j0 + 1.0; 
-            
+                
             s1 = x - i0; 
             s0 = 1.0 - s1; 
             t1 = y - j0; 
