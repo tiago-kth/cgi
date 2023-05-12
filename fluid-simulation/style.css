@@ -8,3 +8,38 @@ canvas {
     border: 3px solid green;
     background-color: black;
 }
+
+/* CONTROLS */
+
+.controls {
+
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    background-color: black;
+    color: green;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    padding: 1rem;
+
+}
+
+.wrapper-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+
+.wrapper-input label {
+    margin-inline-start: 1em;
+}
+
+[data-display] {
+
+    width: 4rem;
+    border: 1px solid green;
+    margin-inline-start: 1em;
+    padding: .2em;
+    text-align: center;
+
+}

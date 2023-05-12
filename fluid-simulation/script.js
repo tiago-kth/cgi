@@ -248,6 +248,52 @@ class Fluid {
 
 }
 
+class Controls {
+
+    el;
+    display;
+    variable
+
+    constructor(variable) {
+
+        this.variable = variable;
+        this.el = document.querySelector('#' + variable);
+        // initialize value
+        this.el.value = params[variable];
+        this.display = document.querySelector(`[data-display="${variable}"]`);
+        this.update_display();
+        this.el.addEventListener('change', e => this.update(e, this));
+
+    }
+
+    update(e, ref) {
+        ref.update_param();
+        ref.update_display();
+    }
+
+    update_display() {
+
+        this.display.innerText = params[this.variable];
+
+    }
+
+    update_param() {
+
+        params[this.variable] = +this.el.value;
+
+    }
+
+}
+
+function init_controls() {
+
+    Object.keys(params).forEach(variable => {
+        console.log('Iniciando controle da variavel ', variable);
+        if (variable != 'ITERATIONS') return new Controls(variable);
+    })
+
+}
+
 
 
 /////////////
@@ -257,6 +303,8 @@ let count = 0;
 const cv = new Canvas('canvas');
 const N = cv.N;
 const fluid = new Fluid(0.05, 0.01, 0.00001);
+console.log(params);
+init_controls();
 
 let dragging = false;
 let mouse_history_x = [];
