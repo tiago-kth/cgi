@@ -1,6 +1,6 @@
 function diffuse(b, x, x0, diffusion) {
 
-    const dt = fluid.dt;
+    const dt = params.TIME_STEP;
 
     const a = dt * diffusion * (N - 2) * (N - 2);
 
@@ -45,7 +45,7 @@ function advect(b, d, d0, vX, vY) {
 
     // b controls the set boundaries
 
-    const dt = fluid.dt;
+    const dt = params.TIME_STEP;
     
     let i0, i1, j0, j1;
     

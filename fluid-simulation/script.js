@@ -2,7 +2,9 @@ const params = {
     DIFFUSION: null,
     VISCOSITY: null,
     TIME_STEP: null,
-    ITERATIONS: 4
+    ITERATIONS: 4,
+    SPEED_INCREMENT: 100,
+    DENSITY_INCREMENT: 100 
 }
 
 class Canvas {
@@ -155,6 +157,10 @@ class Fluid {
         this.diffusion = diffusion;
         this.dt = time_step;
 
+        params.VISCOSITY = viscosity;
+        params.DIFFUSION = diffusion;
+        params.TIME_STEP = time_step;
+
     }
 
     getIndex(x, y) {
@@ -181,8 +187,8 @@ class Fluid {
     step() {
 
         //const N       = this.size;
-        const visc    = this.viscosity;
-        const diff    = this.diffusion;
+        const visc    = params.VISCOSITY;//this.viscosity;
+        const diff    = params.DIFFUSION;//this.diffusion;
         //const dt      = this.dt;
 
         const Vx      = this.Vx;
@@ -223,8 +229,10 @@ class Fluid {
 
                 //if (density > 0) console.log(i,j);
 
-                cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
+                //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
+                cv.ctx.fillStyle = (`rgb(0, ${density}, 0)`);
                 //cv.ctx.fillStyle = 'hotpink';
+                //cv.ctx.globalAlpha = density / 1000;
                 cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
                 //if (i + j < 100) console.log(x, y, cv.cell_size);
                 
@@ -296,8 +304,8 @@ cv.el.addEventListener('mousemove', (e) => {
         const displ_y = mouse_history_y[1] - mouse_history_y[0];
 
         //console.log(i, j);
-        fluid.addDensity(i, j, 100);
-        fluid.addVelocity(i, j, displ_x * 100, displ_y * 100);
+        fluid.addDensity(i, j, params.DENSITY_INCREMENT);
+        fluid.addVelocity(i, j, displ_x * params.SPEED_INCREMENT, displ_y * params.SPEED_INCREMENT);
 
     }
 
