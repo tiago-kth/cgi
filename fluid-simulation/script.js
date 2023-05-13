@@ -9,7 +9,7 @@ const params = {
 
 class Canvas {
 
-    cell_size = 15;
+    cell_size = 3;
     W;
     H;
     I;
@@ -173,6 +173,11 @@ class Fluid {
 
         const index = this.getIndex(x, y);
         this.density[index] += amount;
+        
+        this.density[this.getIndex(x, y - 1)] += amount * 0.6;
+        this.density[this.getIndex(x, y + 1)] += amount * 0.6;
+        this.density[this.getIndex(x -1, y)] += amount * 0.6;
+        this.density[this.getIndex(x +1, y)] += amount * 0.6;
 
     }
 
@@ -294,6 +299,24 @@ function init_controls() {
 
 }
 
+function set_initial_density() {
+
+    for (let i = 0; i < N; i++) {
+
+        for (let j = 0; j < N; j++) {
+
+            const index = fluid.getIndex(i, j);
+
+            const noise = perlin.get(i / N, j / N) + 1;
+
+            fluid.density[index] += 300 * noise;
+
+        }
+
+    }
+
+}
+
 
 
 /////////////
@@ -302,9 +325,10 @@ let count = 0;
 
 const cv = new Canvas('canvas');
 const N = cv.N;
-const fluid = new Fluid(0.05, 0.01, 0.00001);
+const fluid = new Fluid(0.001, 0.01, 0.00001);
 console.log(params);
 init_controls();
+set_initial_density();
 
 let dragging = false;
 let mouse_history_x = [];
