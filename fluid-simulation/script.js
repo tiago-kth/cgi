@@ -9,7 +9,7 @@ const params = {
 
 class Canvas {
 
-    cell_size = 3;
+    cell_size = 20;
     W;
     H;
     I;
@@ -251,6 +251,52 @@ class Fluid {
 
     }
 
+    getCoords(n) {
+
+        return {
+            i : n % N,
+            j : Math.floor( n / N )
+        }
+
+    }
+
+    display_vectors() {
+
+        cv.ctx.textAlign = 'center';
+        cv.ctx.textBaseline = 'middle';
+
+        this.Vx.forEach( (vx, n) => {
+
+            const i = this.getCoords(n).i;
+            const j = this.getCoords(n).j;
+
+            const vy = this.Vy[n];
+
+            let angle = Math.atan(vx / vy);
+
+            if ( vx < 0) angle += Math.PI;
+
+            cv.ctx.save();
+
+                cv.ctx.translate(i * cv.cell_size + cv.cell_size/2, j * cv.cell_size + cv.cell_size/2);
+
+                cv.ctx.save();
+
+                    cv.ctx.rotate(angle);
+                    cv.ctx.fillStyle = "white";
+                    cv.ctx.fillText('→', 0, 0, cv.cell_size);
+
+                cv.ctx.restore();
+
+            cv.ctx.restore();
+
+
+        })
+
+
+
+    }
+
 }
 
 class Controls {
@@ -328,7 +374,10 @@ const N = cv.N;
 const fluid = new Fluid(0.001, 0.01, 0.00001);
 console.log(params);
 init_controls();
-set_initial_density();
+
+const p = new Particle(cv.W/2, cv.H/2, cv);
+const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
+//set_initial_density();
 
 let dragging = false;
 let mouse_history_x = [];
@@ -393,6 +442,9 @@ cv.el.addEventListener('mouseup', (e) => {
 function draw() {
     fluid.step();
     fluid.render_density();
+    fluid.display_vectors();
+    //p.step();
+    //p2.step();
 }
 
 
