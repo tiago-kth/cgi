@@ -9,7 +9,7 @@ const params = {
 
 class Canvas {
 
-    cell_size = 20;
+    cell_size = 40;
     W;
     H;
     I;
@@ -235,7 +235,7 @@ class Fluid {
                 //if (density > 0) console.log(i,j);
 
                 //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
-                cv.ctx.fillStyle = (`rgb(0, ${density}, 0)`);
+                cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;
                 cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
@@ -272,6 +272,8 @@ class Fluid {
 
             const vy = this.Vy[n];
 
+            const module = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
+
             let angle = Math.atan(vx / vy);
 
             if ( vx < 0) angle += Math.PI;
@@ -282,8 +284,11 @@ class Fluid {
 
                 cv.ctx.save();
 
+                //console.log(module, vx, vy);
+
                     cv.ctx.rotate(angle);
                     cv.ctx.fillStyle = "white";
+                    cv.ctx.font = `${module/10}px serif`;
                     cv.ctx.fillText('→', 0, 0, cv.cell_size);
 
                 cv.ctx.restore();
