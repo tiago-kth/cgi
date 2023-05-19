@@ -18,7 +18,7 @@ class Particle {
 
         this.color = 'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
-        this.decay = Math.random() / 100 + 0.01;
+        this.decay = Math.random() / 1000 + 0.005;
 
         this.x = x;
         this.y = y;

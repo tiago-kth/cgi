@@ -249,7 +249,7 @@ class Fluid {
                 //if (density > 0) console.log(i,j);
 
                 //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
-                cv.ctx.fillStyle = (`rgb(${density}, ${density}, ${density})`);
+                cv.ctx.fillStyle = (`rgb(0,0, ${density})`);
                 //cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;
@@ -384,7 +384,7 @@ function set_initial_density() {
 
             const noise = perlin.get(i / N, j / N) + 1;
 
-            fluid.density[index] = 100 * noise;
+            fluid.density[index] = 80 * noise;
 
         }
 
