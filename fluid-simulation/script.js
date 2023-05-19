@@ -4,7 +4,8 @@ const params = {
     TIME_STEP: null,
     ITERATIONS: 4,
     SPEED_INCREMENT: 100,
-    DENSITY_INCREMENT: 100 
+    DENSITY_INCREMENT: 100,
+    N_PARTICLES: 30
 }
 
 class Canvas {
@@ -80,6 +81,19 @@ class Canvas {
     getSize() {
 
         return this.I * this.J;
+
+    }
+
+    getCell(x, y) {
+
+        const cell_size = this.cell_size;
+
+        return {
+
+            i : Math.floor(x / cell_size),
+            j : Math.floor(y / cell_size)
+
+        }
 
     }
 
@@ -234,8 +248,8 @@ class Fluid {
 
                 //if (density > 0) console.log(i,j);
 
-                //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
-                cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
+                cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
+                //cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;
                 cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
@@ -369,7 +383,7 @@ function set_initial_density() {
 
             const noise = perlin.get(i / N, j / N) + 1;
 
-            fluid.density[index] += 300 * noise;
+            fluid.density[index] = 100 * noise;
 
         }
 
@@ -389,9 +403,9 @@ const fluid = new Fluid(0.001, 0.01, 0.00001);
 console.log(params);
 init_controls();
 
-const p = new Particle(cv.W/2, cv.H/2, cv);
-const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
-//set_initial_density();
+//const p = new Particle(cv.W/2, cv.H/2, cv);
+//const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
+set_initial_density();
 
 let dragging = false;
 let mouse_history_x = [];
@@ -418,6 +432,32 @@ function update_mouse_history(posX, posY) {
 
 }
 
+cv.el.addEventListener('click', (e) => {
+
+    const x = e.clientX;
+    const y = e.clientY;
+
+    const { i, j } = cv.getCell(x, y);
+
+    console.log('hey!', i, j);
+
+    const m = 200;
+
+    fluid.addVelocity(i - 1, j - 1, -m, -m);
+    fluid.addVelocity(i    , j - 1,  0, -m);
+    fluid.addVelocity(i + 1, j - 1,  m, -m);
+
+    fluid.addVelocity(i - 1, j,     -m,  0);
+    fluid.addVelocity(i + 1, j,      m,  0);
+
+    fluid.addVelocity(i - 1, j + 1, -m,  m);
+    fluid.addVelocity(i    , j + 1,  0,  m);
+    fluid.addVelocity(i + 1, j + 1,  m,  m);
+
+    generate_particles(params.N_PARTICLES, e.clientX, e.clientY);
+
+})
+
 cv.el.addEventListener('mousedown', (e) => {
 
     console.log('on');
@@ -439,7 +479,7 @@ cv.el.addEventListener('mousemove', (e) => {
         const displ_y = mouse_history_y[1] - mouse_history_y[0];
 
         //console.log(i, j);
-        fluid.addDensity(i, j, params.DENSITY_INCREMENT);
+        //fluid.addDensity(i, j, params.DENSITY_INCREMENT);
         fluid.addVelocity(i, j, displ_x * params.SPEED_INCREMENT, displ_y * params.SPEED_INCREMENT);
 
     }
@@ -457,8 +497,12 @@ function draw() {
     fluid.step();
     fluid.render_density();
     //fluid.display_vectors();
-    p.step();
-    p2.step();
+    //p.step();
+    //p2.step();
+    particles.forEach(p => p.step());
+    if (particles.length > 0) {
+        if (particles[0].alpha < 0.1) particles.splice(0, params.N_PARTICLES - 1);
+    }
 }
 
 

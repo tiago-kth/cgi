@@ -6,11 +6,14 @@ class Particle {
     y;
     x0;
     y0;
-    canvas
+    canvas;
+    alpha;
+    decay = 0.02;
 
     constructor(x, y, canvas) {
 
         this.canvas = canvas;
+        this.alpha = 1;
 
         this.x = x;
         this.y = y;
@@ -18,8 +21,17 @@ class Particle {
         this.x0 = x;
         this.y0 = y;
 
-        this.vx = 100;
-        this.vy = 100;
+        
+
+        this.getVelocity();
+
+        /*
+        console.log(this.vx, this.vy);
+        this.vx += vx0 * 10;
+        this.vy += vy0 * 10;
+        console.log(this.vx, this.vy);
+        */
+
 
         this.xmax = canvas.W;
         this.ymax = canvas.H;
@@ -58,6 +70,8 @@ class Particle {
 
         this.getVelocity();
 
+        this.alpha = (1 - this.decay) * this.alpha;
+
         this.x0 = this.x;
         this.y0 = this.y;
 
@@ -86,6 +100,7 @@ class Particle {
         cv.ctx.strokeStyle = 'cyan';
         cv.ctx.lineWidth = 8;
         cv.ctx.beginPath();
+        cv.ctx.globalAlpha = this.alpha;
         cv.ctx.moveTo(this.x0, this.y0);
         cv.ctx.lineTo(this.x, this.y);
         cv.ctx.closePath();
@@ -101,5 +116,24 @@ class Particle {
     }
 
 
+}
+
+let particles = [];
+
+const Np = 20;
+
+function generate_particles(N, x0, y0) {
+
+    for (let theta = 0; theta < Math.PI * 2; theta += Math.PI * 2 / N) {
+
+        const v = Vec.fromAngle(theta);
+
+        //console.log(v);
+
+        const new_p = new Particle(x0 + v.x * cv.cell_size, y0 + v.y * cv.cell_size, cv);
+
+        particles.push(new_p);
+
+    }
 
 }
