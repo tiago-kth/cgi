@@ -10,12 +10,15 @@ class Particle {
     alpha;
     decay;
     color;
+    r;
 
     constructor(x, y, canvas) {
 
         this.canvas = canvas;
         this.alpha = 1;
         this.initial_distance = Math.random() * 10;
+
+        this.r = 6;
 
         this.color = 'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
@@ -77,6 +80,7 @@ class Particle {
         this.getVelocity();
 
         this.alpha = (1 - this.decay) * this.alpha;
+        this.r = (1 - this.decay) * this.r;
 
         this.x0 = this.x;
         this.y0 = this.y;
@@ -109,7 +113,7 @@ class Particle {
         cv.ctx.beginPath();
         cv.ctx.globalAlpha = this.alpha;
         //cv.ctx.moveTo(this.x0, this.y0);
-        cv.ctx.arc(this.x, this.y, 4, 0, Math.PI);
+        cv.ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
         //cv.ctx.lineTo(this.x, this.y);
         cv.ctx.fill();
         cv.ctx.closePath();
