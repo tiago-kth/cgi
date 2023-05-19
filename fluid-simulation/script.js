@@ -392,6 +392,14 @@ function set_initial_density() {
 
 }
 
+let display_vector_field = false;
+
+function monitor_button_display_vector() {
+
+    const btn = document.querySelector('.btn-display-vector');
+    btn.addEventListener('click', e => display_vector_field = !display_vector_field);
+
+}
 
 
 /////////////
@@ -403,6 +411,7 @@ const N = cv.N;
 const fluid = new Fluid(0.001, 0.01, 0.00001);
 console.log(params);
 init_controls();
+monitor_button_display_vector();
 
 //const p = new Particle(cv.W/2, cv.H/2, cv);
 //const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
@@ -498,6 +507,7 @@ function draw() {
     fluid.step();
     fluid.render_density();
     //fluid.display_vectors();
+    if (display_vector_field) fluid.display_vectors();
     //p.step();
     //p2.step();
     particles.forEach(p => p.step());
