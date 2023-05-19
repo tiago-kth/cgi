@@ -5,6 +5,61 @@
 canvas {
     width: 97vmin;
     height: 97vmin;
-    border: 3px solid cyan;
+    border: 3px solid black;
     background-color: black;
+}
+
+/* CONTROLS */
+
+.toggle-controls {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    padding: 1em;
+}
+
+.controls {
+
+    position: absolute;
+    top: 5em;
+    right: 1em;
+    background-color: black;
+    color: green;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    padding: 1rem;
+    transition: transform 1s;
+    transform: translate(100%, 0);
+
+}
+
+.display {
+    transform: translate(0,0);
+}
+
+.wrapper-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: .5rem;
+}
+
+.wrapper-input label {
+    margin-inline-start: 1em;
+}
+
+[data-display] {
+
+    width: 4rem;
+    border: 1px solid green;
+    margin-inline-start: 1em;
+    padding: .2em;
+    text-align: center;
+
+}
+
+.btn-display-vector {
+    font-family: inherit;
 }
