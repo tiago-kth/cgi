@@ -442,7 +442,7 @@ cv.el.addEventListener('click', (e) => {
 
     console.log('hey!', i, j);
 
-    const m = 200;
+    const m = 100;
 
     fluid.addVelocity(i - 1, j - 1, -m, -m);
     fluid.addVelocity(i    , j - 1,  0, -m);

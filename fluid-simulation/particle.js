@@ -15,6 +15,7 @@ class Particle {
 
         this.canvas = canvas;
         this.alpha = 1;
+        this.initial_distance = Math.random() * 10;
 
         this.color = 'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
@@ -136,9 +137,11 @@ function generate_particles(N, x0, y0) {
 
         const v = Vec.fromAngle(theta);
 
+        const r = Math.random() * cv.cell_size;
+
         //console.log(v);
 
-        const new_p = new Particle(x0 + v.x * cv.cell_size, y0 + v.y * cv.cell_size, cv);
+        const new_p = new Particle(x0 + v.x * r, y0 + v.y * r, cv);
 
         particles.push(new_p);
 
