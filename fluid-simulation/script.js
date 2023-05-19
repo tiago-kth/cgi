@@ -433,31 +433,7 @@ function update_mouse_history(posX, posY) {
 
 }
 
-cv.el.addEventListener('click', (e) => {
-
-    const x = e.clientX;
-    const y = e.clientY;
-
-    const { i, j } = cv.getCell(x, y);
-
-    console.log('hey!', i, j);
-
-    const m = 100;
-
-    fluid.addVelocity(i - 1, j - 1, -m, -m);
-    fluid.addVelocity(i    , j - 1,  0, -m);
-    fluid.addVelocity(i + 1, j - 1,  m, -m);
-
-    fluid.addVelocity(i - 1, j,     -m,  0);
-    fluid.addVelocity(i + 1, j,      m,  0);
-
-    fluid.addVelocity(i - 1, j + 1, -m,  m);
-    fluid.addVelocity(i    , j + 1,  0,  m);
-    fluid.addVelocity(i + 1, j + 1,  m,  m);
-
-    generate_particles(params.N_PARTICLES, e.clientX, e.clientY);
-
-})
+cv.el.addEventListener('click', splash)
 
 cv.el.addEventListener('mousedown', (e) => {
 
@@ -494,6 +470,32 @@ cv.el.addEventListener('mouseup', (e) => {
 
 });
 
+function splash(e) {
+
+    const x = e.clientX;
+    const y = e.clientY;
+
+    const { i, j } = cv.getCell(x, y);
+
+    console.log('hey!', i, j);
+
+    const m = 100;
+
+    fluid.addVelocity(i - 1, j - 1, -m, -m);
+    fluid.addVelocity(i    , j - 1,  0, -m);
+    fluid.addVelocity(i + 1, j - 1,  m, -m);
+
+    fluid.addVelocity(i - 1, j,     -m,  0);
+    fluid.addVelocity(i + 1, j,      m,  0);
+
+    fluid.addVelocity(i - 1, j + 1, -m,  m);
+    fluid.addVelocity(i    , j + 1,  0,  m);
+    fluid.addVelocity(i + 1, j + 1,  m,  m);
+
+    generate_particles(params.N_PARTICLES, e.clientX, e.clientY);
+
+}
+
 function draw() {
     fluid.step();
     fluid.render_density();
@@ -502,7 +504,8 @@ function draw() {
     //p2.step();
     particles.forEach(p => p.step());
     if (particles.length > 0) {
-        if (particles[0].alpha < 0.1) particles.splice(0, params.N_PARTICLES - 1);
+        // removal criteria here
+        if (particles[0].alpha < 0.01) particles.splice(0, params.N_PARTICLES - 1);
     }
 }
 
