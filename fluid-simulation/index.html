@@ -9,6 +9,8 @@
 </head>
 <body>
 
+    <button class="toggle-controls">Show / Hide</button>
+
     <div class="controls">
 
         <div class="wrapper-input">
@@ -41,12 +43,21 @@
             <label for="DENSITY_INCREMENT">Density increment</label>
         </div>
 
+        <div class="wrapper-input">
+            <input type="range" id="N_PARTICLES" name="N_PARTICLES" min="1" step="10" max="300">
+            <span data-display="N_PARTICLES"></span>
+            <label for="N_PARTICLES">Number of particles</label>
+        </div>
+
+        <button class="btn-display-vector">Display vector field</button>
+
     </div>
     
     <canvas></canvas>
 
     <script src="perlin.js"></script>
     <script src="simulation-operations.js"></script>
+    <script src="particle.js"></script>
     <script src="script.js"></script>
 
 </body>

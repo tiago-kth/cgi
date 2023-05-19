@@ -4,12 +4,13 @@ const params = {
     TIME_STEP: null,
     ITERATIONS: 4,
     SPEED_INCREMENT: 100,
-    DENSITY_INCREMENT: 100 
+    DENSITY_INCREMENT: 100,
+    N_PARTICLES: 30
 }
 
 class Canvas {
 
-    cell_size = 3;
+    cell_size = 20;
     W;
     H;
     I;
@@ -80,6 +81,19 @@ class Canvas {
     getSize() {
 
         return this.I * this.J;
+
+    }
+
+    getCell(x, y) {
+
+        const cell_size = this.cell_size;
+
+        return {
+
+            i : Math.floor(x / cell_size),
+            j : Math.floor(y / cell_size)
+
+        }
 
     }
 
@@ -235,7 +249,8 @@ class Fluid {
                 //if (density > 0) console.log(i,j);
 
                 //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
-                cv.ctx.fillStyle = (`rgb(0, ${density}, 0)`);
+                cv.ctx.fillStyle = (`rgb(0,0, ${density})`);
+                //cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;
                 cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
@@ -251,13 +266,64 @@ class Fluid {
 
     }
 
+    getCoords(n) {
+
+        return {
+            i : n % N,
+            j : Math.floor( n / N )
+        }
+
+    }
+
+    display_vectors() {
+
+        cv.ctx.textAlign = 'center';
+        cv.ctx.textBaseline = 'middle';
+
+        this.Vx.forEach( (vx, n) => {
+
+            const i = this.getCoords(n).i;
+            const j = this.getCoords(n).j;
+
+            const vy = this.Vy[n];
+
+            //const module = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
+
+            let angle = Math.atan(vx / vy);
+
+            if ( vx < 0) angle += Math.PI;
+
+            cv.ctx.save();
+
+                cv.ctx.translate(i * cv.cell_size + cv.cell_size/2, j * cv.cell_size + cv.cell_size/2);
+
+                cv.ctx.save();
+
+                //console.log(module, vx, vy);
+
+                    cv.ctx.rotate(angle);
+                    cv.ctx.fillStyle = "white";
+                    //cv.ctx.font = `${module/10}px serif`;
+                    cv.ctx.fillText('→', 0, 0, cv.cell_size);
+
+                cv.ctx.restore();
+
+            cv.ctx.restore();
+
+
+        })
+
+
+
+    }
+
 }
 
 class Controls {
 
     el;
     display;
-    variable
+    variable;
 
     constructor(variable) {
 
@@ -292,6 +358,15 @@ class Controls {
 
 function init_controls() {
 
+    const btn = document.querySelector('.toggle-controls');
+    const ctrls = document.querySelector('.controls');
+
+    btn.addEventListener('click', e => {
+
+        ctrls.classList.toggle('display');
+        
+    })
+
     Object.keys(params).forEach(variable => {
         console.log('Iniciando controle da variavel ', variable);
         if (variable != 'ITERATIONS') return new Controls(variable);
@@ -309,7 +384,7 @@ function set_initial_density() {
 
             const noise = perlin.get(i / N, j / N) + 1;
 
-            fluid.density[index] += 300 * noise;
+            fluid.density[index] = 80 * noise;
 
         }
 
@@ -317,6 +392,14 @@ function set_initial_density() {
 
 }
 
+let display_vector_field = false;
+
+function monitor_button_display_vector() {
+
+    const btn = document.querySelector('.btn-display-vector');
+    btn.addEventListener('click', e => display_vector_field = !display_vector_field);
+
+}
 
 
 /////////////
@@ -328,6 +411,10 @@ const N = cv.N;
 const fluid = new Fluid(0.001, 0.01, 0.00001);
 console.log(params);
 init_controls();
+monitor_button_display_vector();
+
+//const p = new Particle(cv.W/2, cv.H/2, cv);
+//const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
 set_initial_density();
 
 let dragging = false;
@@ -355,6 +442,8 @@ function update_mouse_history(posX, posY) {
 
 }
 
+cv.el.addEventListener('click', splash)
+
 cv.el.addEventListener('mousedown', (e) => {
 
     console.log('on');
@@ -376,7 +465,7 @@ cv.el.addEventListener('mousemove', (e) => {
         const displ_y = mouse_history_y[1] - mouse_history_y[0];
 
         //console.log(i, j);
-        fluid.addDensity(i, j, params.DENSITY_INCREMENT);
+        //fluid.addDensity(i, j, params.DENSITY_INCREMENT);
         fluid.addVelocity(i, j, displ_x * params.SPEED_INCREMENT, displ_y * params.SPEED_INCREMENT);
 
     }
@@ -390,9 +479,42 @@ cv.el.addEventListener('mouseup', (e) => {
 
 });
 
+function splash(e) {
+
+    const x = e.clientX;
+    const y = e.clientY;
+
+    const { i, j } = cv.getCell(x, y);
+
+    const m = 100;
+
+    fluid.addVelocity(i - 1, j - 1, -m, -m);
+    fluid.addVelocity(i    , j - 1,  0, -m);
+    fluid.addVelocity(i + 1, j - 1,  m, -m);
+
+    fluid.addVelocity(i - 1, j,     -m,  0);
+    fluid.addVelocity(i + 1, j,      m,  0);
+
+    fluid.addVelocity(i - 1, j + 1, -m,  m);
+    fluid.addVelocity(i    , j + 1,  0,  m);
+    fluid.addVelocity(i + 1, j + 1,  m,  m);
+
+    generate_particles(params.N_PARTICLES, e.clientX, e.clientY);
+
+}
+
 function draw() {
     fluid.step();
     fluid.render_density();
+    //fluid.display_vectors();
+    if (display_vector_field) fluid.display_vectors();
+    //p.step();
+    //p2.step();
+    particles.forEach(p => p.step());
+    if (particles.length > 0) {
+        // removal criteria here
+        if (particles[0].alpha < 0.01) particles.splice(0, params.N_PARTICLES - 1);
+    }
 }
 
 
