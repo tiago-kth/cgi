@@ -248,7 +248,8 @@ class Fluid {
 
                 //if (density > 0) console.log(i,j);
 
-                cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
+                //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
+                cv.ctx.fillStyle = (`rgb(${density}, ${density}, ${density})`);
                 //cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;

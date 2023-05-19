@@ -8,12 +8,17 @@ class Particle {
     y0;
     canvas;
     alpha;
-    decay = 0.02;
+    decay;
+    color;
 
     constructor(x, y, canvas) {
 
         this.canvas = canvas;
         this.alpha = 1;
+
+        this.color = 'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+
+        this.decay = Math.random() / 100 + 0.01;
 
         this.x = x;
         this.y = y;
@@ -97,14 +102,17 @@ class Particle {
 
     render() {
 
-        cv.ctx.strokeStyle = 'cyan';
+        //cv.ctx.strokeStyle = 'cyan';
+        cv.ctx.fillStyle = this.color;//'blue';
         cv.ctx.lineWidth = 8;
         cv.ctx.beginPath();
         cv.ctx.globalAlpha = this.alpha;
-        cv.ctx.moveTo(this.x0, this.y0);
-        cv.ctx.lineTo(this.x, this.y);
+        //cv.ctx.moveTo(this.x0, this.y0);
+        cv.ctx.arc(this.x, this.y, 4, 0, Math.PI);
+        //cv.ctx.lineTo(this.x, this.y);
+        cv.ctx.fill();
         cv.ctx.closePath();
-        cv.ctx.stroke();
+        //cv.ctx.stroke();
 
     }
 
