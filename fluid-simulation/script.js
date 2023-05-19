@@ -9,7 +9,7 @@ const params = {
 
 class Canvas {
 
-    cell_size = 40;
+    cell_size = 20;
     W;
     H;
     I;
@@ -272,7 +272,7 @@ class Fluid {
 
             const vy = this.Vy[n];
 
-            const module = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
+            //const module = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
 
             let angle = Math.atan(vx / vy);
 
@@ -288,7 +288,7 @@ class Fluid {
 
                     cv.ctx.rotate(angle);
                     cv.ctx.fillStyle = "white";
-                    cv.ctx.font = `${module/10}px serif`;
+                    //cv.ctx.font = `${module/10}px serif`;
                     cv.ctx.fillText('→', 0, 0, cv.cell_size);
 
                 cv.ctx.restore();
@@ -447,9 +447,9 @@ cv.el.addEventListener('mouseup', (e) => {
 function draw() {
     fluid.step();
     fluid.render_density();
-    fluid.display_vectors();
-    //p.step();
-    //p2.step();
+    //fluid.display_vectors();
+    p.step();
+    p2.step();
 }
 
 
