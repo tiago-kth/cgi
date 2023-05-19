@@ -308,7 +308,7 @@ class Controls {
 
     el;
     display;
-    variable
+    variable;
 
     constructor(variable) {
 
@@ -342,6 +342,15 @@ class Controls {
 }
 
 function init_controls() {
+
+    const btn = document.querySelector('.toggle-controls');
+    const ctrls = document.querySelector('.controls');
+
+    btn.addEventListener('click', e => {
+
+        ctrls.classList.toggle('display');
+        
+    })
 
     Object.keys(params).forEach(variable => {
         console.log('Iniciando controle da variavel ', variable);

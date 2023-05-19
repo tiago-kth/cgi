@@ -11,17 +11,33 @@ canvas {
 
 /* CONTROLS */
 
+.toggle-controls {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    padding: 1em;
+}
+
 .controls {
 
     position: absolute;
-    top: 1em;
+    top: 5em;
     right: 1em;
     background-color: black;
     color: green;
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.75rem;
     padding: 1rem;
+    transition: transform 1s;
+    transform: translate(100%, 0);
 
+}
+
+.display {
+    transform: translate(0,0);
 }
 
 .wrapper-input {
