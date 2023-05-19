@@ -477,8 +477,6 @@ function splash(e) {
 
     const { i, j } = cv.getCell(x, y);
 
-    console.log('hey!', i, j);
-
     const m = 100;
 
     fluid.addVelocity(i - 1, j - 1, -m, -m);

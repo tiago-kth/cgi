@@ -11,12 +11,14 @@ class Particle {
     decay;
     color;
     r;
+    arc_length;
 
     constructor(x, y, canvas) {
 
         this.canvas = canvas;
         this.alpha = 1;
         this.initial_distance = Math.random() * 10;
+        this.arc_length = Math.random() * Math.PI * 2;
 
         this.r = 6;
 
@@ -113,7 +115,7 @@ class Particle {
         cv.ctx.beginPath();
         cv.ctx.globalAlpha = this.alpha;
         //cv.ctx.moveTo(this.x0, this.y0);
-        cv.ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        cv.ctx.arc(this.x, this.y, this.r, 0, this.arc_length);//Math.PI * 2);
         //cv.ctx.lineTo(this.x, this.y);
         cv.ctx.fill();
         cv.ctx.closePath();
