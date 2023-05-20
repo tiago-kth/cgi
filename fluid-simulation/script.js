@@ -5,7 +5,7 @@ const params = {
     ITERATIONS: 4,
     SPEED_INCREMENT: 100,
     DENSITY_INCREMENT: 100,
-    N_PARTICLES: 30
+    N_PARTICLES: 1000
 }
 
 class Canvas {

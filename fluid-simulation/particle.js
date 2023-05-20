@@ -1,3 +1,5 @@
+const colors = ['#00FF99', '#99FFD3', '#00FFFF'];
+
 class Particle {
 
     vx;
@@ -18,11 +20,12 @@ class Particle {
         this.canvas = canvas;
         this.alpha = 1;
         this.initial_distance = Math.random() * 10;
-        this.arc_length = Math.random() * Math.PI * 2;
+        this.arc_length = Math.PI * 2;// Math.random() * Math.PI * 2;
 
-        this.r = 6;
+        this.r = 3;
 
-        this.color = 'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+
+        this.color = colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
         this.decay = Math.random() / 1000 + 0.005;
 
@@ -82,7 +85,7 @@ class Particle {
         this.getVelocity();
 
         this.alpha = (1 - this.decay) * this.alpha;
-        this.r = (1 - this.decay) * this.r;
+        //this.r = (1 - this.decay) * this.r;
 
         this.x0 = this.x;
         this.y0 = this.y;
@@ -111,13 +114,16 @@ class Particle {
 
         //cv.ctx.strokeStyle = 'cyan';
         cv.ctx.fillStyle = this.color;//'blue';
-        cv.ctx.lineWidth = 8;
+        cv.ctx.lineWidth = 1;
         cv.ctx.beginPath();
         cv.ctx.globalAlpha = this.alpha;
         //cv.ctx.moveTo(this.x0, this.y0);
         cv.ctx.arc(this.x, this.y, this.r, 0, this.arc_length);//Math.PI * 2);
         //cv.ctx.lineTo(this.x, this.y);
         cv.ctx.fill();
+        //cv.ctx.strokeStyle = 'white';
+        //cv.ctx.filter = "blur(1px)";
+        //cv.ctx.stroke();
         cv.ctx.closePath();
         //cv.ctx.stroke();
 
@@ -143,7 +149,7 @@ function generate_particles(N, x0, y0) {
 
         const v = Vec.fromAngle(theta);
 
-        const r = Math.random() * cv.cell_size;
+        const r = Math.random() * 5 * cv.cell_size + cv.cell_size;
 
         //console.log(v);
 
