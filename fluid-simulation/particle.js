@@ -149,7 +149,7 @@ function generate_particles(N, x0, y0) {
 
         const v = Vec.fromAngle(theta);
 
-        const r = Math.random() * 5 * cv.cell_size + cv.cell_size;
+        const r = Math.random() * 8 * cv.cell_size + cv.cell_size;
 
         //console.log(v);
 
