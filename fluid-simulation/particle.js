@@ -22,12 +22,12 @@ class Particle {
         this.initial_distance = Math.random() * 10;
         this.arc_length = Math.PI * 2;// Math.random() * Math.PI * 2;
 
-        this.r = 3;
+        this.r = 2;
 
 
-        this.color = colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+        this.color = 'turquoise';//colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
-        this.decay = Math.random() / 1000 + 0.005;
+        this.decay = Math.random() / 1000 + 0.05;
 
         this.x = x;
         this.y = y;

@@ -10,7 +10,7 @@ const params = {
 
 class Canvas {
 
-    cell_size = 20;
+    cell_size = 5;
     W;
     H;
     I;
@@ -249,7 +249,7 @@ class Fluid {
                 //if (density > 0) console.log(i,j);
 
                 //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
-                cv.ctx.fillStyle = (`rgb(0,0, ${density})`);
+                cv.ctx.fillStyle = (`rgb(0,${density}, ${density})`);
                 //cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;
@@ -415,7 +415,7 @@ monitor_button_display_vector();
 
 //const p = new Particle(cv.W/2, cv.H/2, cv);
 //const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
-set_initial_density();
+//set_initial_density();
 
 let dragging = false;
 let mouse_history_x = [];
@@ -465,7 +465,7 @@ cv.el.addEventListener('mousemove', (e) => {
         const displ_y = mouse_history_y[1] - mouse_history_y[0];
 
         //console.log(i, j);
-        //fluid.addDensity(i, j, params.DENSITY_INCREMENT);
+        fluid.addDensity(i, j, params.DENSITY_INCREMENT);
         fluid.addVelocity(i, j, displ_x * params.SPEED_INCREMENT, displ_y * params.SPEED_INCREMENT);
 
     }
@@ -486,7 +486,7 @@ function splash(e) {
 
     const { i, j } = cv.getCell(x, y);
 
-    const m = 100;
+    const m = 150;
 
     fluid.addVelocity(i - 1, j - 1, -m, -m);
     fluid.addVelocity(i    , j - 1,  0, -m);
