@@ -25,7 +25,7 @@ class Particle {
         this.r = 2;
 
 
-        this.color = 'turquoise';//colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+        this.color = 'cyan';//colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
         this.decay = Math.random() / 100 + 0.1;
 
