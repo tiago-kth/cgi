@@ -27,7 +27,7 @@ class Particle {
 
         this.color = 'turquoise';//colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
-        this.decay = Math.random() / 1000 + 0.05;
+        this.decay = Math.random() / 100 + 0.1;
 
         this.x = x;
         this.y = y;
@@ -129,10 +129,12 @@ class Particle {
 
     }
 
-    step() {
+    step(i) {
 
         this.update();
         this.render();
+        if (this.alpha < 0.001) this.alpha = 0.0001; // makes sure the last alpha is zero, to avoid "shadows" after the particle was removed
+        if (this.alpha <= 0.0001) particles.splice(i, 1); // now that alpha is really zero and the particle was last rendered with this alpha = 0, remove the particle, leaving no traces
 
     }
 

@@ -503,18 +503,30 @@ function splash(e) {
 
 }
 
+function clearCanvas() {
+    cv.ctx.fillRect(0,0,cv.W,cv.H);
+    cv.ctx.fillStyle = 'black';
+    cv.ctx.globalAlpha = 1;
+}
+
 function draw() {
+
+    clearCanvas();
+
+    cv.ctx.fill();
     fluid.step();
     fluid.render_density();
     //fluid.display_vectors();
     if (display_vector_field) fluid.display_vectors();
     //p.step();
     //p2.step();
-    particles.forEach(p => p.step());
+    particles.forEach((p,i) => p.step(i));
+
+    /*
     if (particles.length > 0) {
         // removal criteria here
-        if (particles[0].alpha < 0.01) particles.splice(0, params.N_PARTICLES - 1);
-    }
+        if (particles[0].alpha < 0.001) particles.splice(0, params.N_PARTICLES - 1);
+    }*/
 }
 
 

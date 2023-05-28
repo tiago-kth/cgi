@@ -1,3 +1,5 @@
+// Adapted from Mike Ash (https://mikeash.com/pyblog/fluid-simulation-for-dummies.html)
+
 function diffuse(b, x, x0, diffusion) {
 
     const dt = params.TIME_STEP;
