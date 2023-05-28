@@ -249,11 +249,17 @@ class Fluid {
                 //if (density > 0) console.log(i,j);
 
                 //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
-                cv.ctx.fillStyle = (`rgb(0,${density}, ${density})`);
+                if (display_density) {
+
+                    cv.ctx.fillStyle = (`rgb(0,${density}, ${density})`);
+                    cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
+
+                }
+                
                 //cv.ctx.fillStyle = (`rgb(${density}, 0, ${density})`);
                 //cv.ctx.fillStyle = 'hotpink';
                 //cv.ctx.globalAlpha = density / 1000;
-                cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
+
                 //if (i + j < 100) console.log(x, y, cv.cell_size);
                 
                 
@@ -393,11 +399,19 @@ function set_initial_density() {
 }
 
 let display_vector_field = false;
+let display_density = false;
 
 function monitor_button_display_vector() {
 
     const btn = document.querySelector('.btn-display-vector');
     btn.addEventListener('click', e => display_vector_field = !display_vector_field);
+
+}
+
+function monitor_button_display_density() {
+
+    const btn = document.querySelector('.btn-display-density');
+    btn.addEventListener('click', e => display_density = !display_density);
 
 }
 
@@ -412,6 +426,7 @@ const fluid = new Fluid(0.001, 0.01, 0.00001);
 console.log(params);
 init_controls();
 monitor_button_display_vector();
+monitor_button_display_density();
 
 //const p = new Particle(cv.W/2, cv.H/2, cv);
 //const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
@@ -504,9 +519,11 @@ function splash(e) {
 }
 
 function clearCanvas() {
-    cv.ctx.fillRect(0,0,cv.W,cv.H);
+
     cv.ctx.fillStyle = 'black';
     cv.ctx.globalAlpha = 1;
+    cv.ctx.fillRect(0,0,cv.W,cv.H);
+    
 }
 
 function draw() {
