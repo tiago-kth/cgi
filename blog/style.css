@@ -1,0 +1,30 @@
+* {
+    box-sizing: border-box;
+}
+
+.picture-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.picture-container img {
+    width: 30%;
+    height: 100%;
+}
+
+.picture-container-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    place-items: center;
+    width: 500px;
+}
+
+.picture-container-grid img {
+    width: 400px;
+    height: 400px;
+    border: 2px solid white;
+}
