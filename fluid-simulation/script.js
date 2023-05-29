@@ -4,11 +4,11 @@ const params = {
     TIME_STEP: null,
     ITERATIONS: 4,
     SPEED_INCREMENT: 100,
-    DENSITY_INCREMENT: 100,
+    DENSITY_INCREMENT: 0,
     N_PARTICLES: 1000,
     SPREAD: 10,
     PARTICLE_RADIUS: 3,
-    MIN_DECAY: 10,
+    MIN_DECAY: 20,
     DECAY_INCREMENT: 100,
     PARTICLE_COLOR: '#00ffff'
 }
@@ -256,7 +256,7 @@ class Fluid {
                 //cv.ctx.fillStyle = (`rgb(0, ${density}, ${density})`);
                 if (display_density) {
 
-                    cv.ctx.fillStyle = (`rgb(0,${density}, ${density})`);
+                    cv.ctx.fillStyle = `rgb(0, 0, ${density})`;
                     cv.ctx.fillRect(x, y, cv.cell_size, cv.cell_size);
 
                 }
@@ -396,7 +396,7 @@ function set_initial_density() {
 
             const noise = perlin.get(i / N, j / N) + 1;
 
-            fluid.density[index] = 80 * noise;
+            fluid.density[index] = 50 * noise;
 
         }
 
@@ -405,7 +405,7 @@ function set_initial_density() {
 }
 
 let display_vector_field = false;
-let display_density = false;
+let display_density = true;
 
 function monitor_button_display_vector() {
 
@@ -436,7 +436,7 @@ monitor_button_display_density();
 
 //const p = new Particle(cv.W/2, cv.H/2, cv);
 //const p2 = new Particle(cv.W/2 + 30, cv.H/2 + 30, cv);
-//set_initial_density();
+set_initial_density();
 
 let dragging = false;
 let mouse_history_x = [];
