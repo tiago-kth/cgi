@@ -7,10 +7,10 @@ const params = {
     DENSITY_INCREMENT: 0,
     N_PARTICLES: 1000,
     SPREAD: 10,
-    PARTICLE_RADIUS: 3,
+    PARTICLE_RADIUS: 1.5,
     MIN_DECAY: 20,
     DECAY_INCREMENT: 100,
-    PARTICLE_COLOR: '#00ffff'
+    PARTICLE_COLOR: '#40a8ff'
 }
 
 class Canvas {
