@@ -5,12 +5,17 @@ const params = {
     ITERATIONS: 4,
     SPEED_INCREMENT: 100,
     DENSITY_INCREMENT: 100,
-    N_PARTICLES: 1000
+    N_PARTICLES: 1000,
+    SPREAD: 10,
+    PARTICLE_RADIUS: 3,
+    MIN_DECAY: 10,
+    DECAY_INCREMENT: 100,
+    PARTICLE_COLOR: '#00ffff'
 }
 
 class Canvas {
 
-    cell_size = 5;
+    cell_size = 10;
     W;
     H;
     I;
@@ -356,7 +361,8 @@ class Controls {
 
     update_param() {
 
-        params[this.variable] = +this.el.value;
+        let value = this.el.value;
+        params[this.variable] = this.variable == 'PARTICLE_COLOR' ? value : +value;
 
     }
 

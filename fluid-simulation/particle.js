@@ -22,12 +22,12 @@ class Particle {
         this.initial_distance = Math.random() * 10;
         this.arc_length = Math.PI * 2;// Math.random() * Math.PI * 2;
 
-        this.r = 2;
+        this.r = params.PARTICLE_RADIUS;
 
 
-        this.color = 'cyan';//colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+        this.color = params.PARTICLE_COLOR;//'cyan';//colors[Math.ceil(Math.random() * 3)-1];//'turquoise'; //`rgb(0, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
 
-        this.decay = Math.random() / 100 + 0.1;
+        this.decay = Math.random() / params.DECAY_INCREMENT + (1 / params.MIN_DECAY);
 
         this.x = x;
         this.y = y;
@@ -151,7 +151,7 @@ function generate_particles(N, x0, y0) {
 
         const v = Vec.fromAngle(theta);
 
-        const r = Math.random() * 8 * cv.cell_size + cv.cell_size;
+        const r = Math.random() * params.SPREAD * cv.cell_size + cv.cell_size;
 
         //console.log(v);
 

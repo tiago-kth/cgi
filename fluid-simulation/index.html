@@ -49,6 +49,36 @@
             <label for="N_PARTICLES">Number of particles</label>
         </div>
 
+        <div class="wrapper-input">
+            <input type="range" id="PARTICLE_RADIUS" name="PARTICLE_RADIUS" min="1" step="1" max="20">
+            <span data-display="PARTICLE_RADIUS"></span>
+            <label for="PARTICLE_RADIUS">Radius of each particle</label>
+        </div>
+
+        <div class="wrapper-input">
+            <input type="range" id="SPREAD" name="SPREAD" min="1" step="1" max="20">
+            <span data-display="SPREAD"></span>
+            <label for="SPREAD">Spread of the created particles (in number of grid cells)</label>
+        </div>
+
+        <div class="wrapper-input">
+            <input type="range" id="DECAY_INCREMENT" name="DECAY_INCREMENT" min="100" step="50" max="1000">
+            <span data-display="DECAY_INCREMENT"></span>
+            <label for="DECAY_INCREMENT">The inverse of the fade rate increment in the random generator</label>
+        </div>
+
+        <div class="wrapper-input">
+            <input type="range" id="MIN_DECAY" name="MIN_DECAY" min="10" step="10" max="100">
+            <span data-display="MIN_DECAY"></span>
+            <label for="MIN_DECAY">The inverse of minimum fade rate</label>
+        </div>
+
+        <div class="wrapper-input">
+            <input type="color" id="PARTICLE_COLOR" name="PARTICLE_COLOR" value="#00FFFF">
+            <span data-display="PARTICLE_COLOR"></span>
+            <label for="PARTICLE_COLOR">Particle color</label>
+        </div>
+
         <button class="btn-display-vector">Display vector field</button>
         <button class="btn-display-density">Display density</button>
 
