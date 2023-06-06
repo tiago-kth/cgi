@@ -105,4 +105,36 @@ Target group. Have you nailed the basics to align with the target group and the 
 Business. Do you now have answers to how you will 1/ create an interest for the game and 2/ maintain an interest. Have you decided how you’ll enter the market? When and how will there be any revenue? To put it simple, who is your first customer? How and when do they pay for what?
 
 
+\section{Implementation}
+
+Our strategy for the implementation can be broken down as follows: 
+
+\begin{itemize}
+\item build a classic fluid dynamics simulation with the Navier-Stokes equations for incompressible flow, resulting in a fluid velocity grid
+\item use this velocity grid as a vector field to move a particle system built on top of the fluid simulation, representing the algae or plankton
+\item make the simulation interactive by allowing touching / clicking to generate new particles, and dragging to change the velocity field realistically
+\item parametrize the particle system to simulate the bio-luminescence behavior
+\end{itemize}
+
+\subsection{The Navier-Stokes equations}
+
+Fluids are everywhere around us -- and inside us. Beyond the engineering and scientific interest, the way they move can also be a source of delight, due to their aesthetically pleasing and random patterns.
+
+Yet the mathematical modeling of fluids is a rather complicated matter. A testimony to this complexity is the fact that the most widely used model for the motion of fluids is the Navier-Stokes equations, and making "substantial progress toward a mathematical theory which will unlock [the equations'] secrets" is a challenge worth (literally) a million-dollar prize. (cite)
+
+The beauty and power of the Navier-Stokes equations derive from the fact that they encapsulate two fundamental laws of Physics: the conservation of mass and the conservation of momentum (Newton's second law) (cite?)
+
+For this simulation, we are using the Navier-Stokes equation in the following formulation, for a vector field \begin{math}
+  \vec{u}((x,y),t)
+\end{math} representing the velocity field, and a scalar field \begin{math}
+  \rho((x,y),t)
+\end{math} representing a scalar field of density moving through the velocity field:
+
+\begin{equation}
+  \frac{\partial\vec{u}}{\partial t} = -(\vec{u}\cdot\nabla)\vec{u} + \nu\nabla^2\vec{u} + \vec{f}
+\end{equation}
+
+\begin{equation}
+  \frac{\partial\rho}{\partial t} = -(\vec{u}\cdot\nabla)\rho + \kappa\nabla^2\rho + S
+\end{equation}
 
